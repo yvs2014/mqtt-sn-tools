@@ -128,6 +128,11 @@ int mqtt_sn_create_socket(const char* host, const char* port, uint16_t source_po
             continue;
         }
 
+        // Allow broadcast
+        int flag = 1;
+        if (setsockopt(fd, SOL_SOCKET, SO_BROADCAST, (const char*)&flag, sizeof(int)) != 0)
+            mqtt_sn_log_err("Failed to setsockopt SO_BROADCAST: %s", strerror(errno));
+
         if (source_port != 0) {
             // Bind socket to the correct port
             struct sockaddr_in addr;
